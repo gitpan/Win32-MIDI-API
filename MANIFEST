@@ -1,0 +1,13 @@
+API.pm
+API.xs
+Changes
+MANIFEST
+Makefile.PL
+README
+eg/td6
+mmsystem.xs
+t/midi.t
+t/midiin.t
+t/midiout.t
+t/midistream.t
+typemap

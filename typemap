@@ -1,0 +1,77 @@
+#	typemap for Win32::MIDI::API
+#
+#	$Id: typemap,v 1.2 2002-09-30 00:10:07-05 hiroo Exp $
+
+UINT		T_IV
+DWORD		T_IV
+MMRESULT	T_MMRESULT
+HMIDI		T_HMIDI
+HMIDIIN		T_HMIDIIN
+HMIDIOUT	T_HMIDIOUT
+HMIDISTRM	T_HMIDISTRM
+LPMIDIHDR	T_PTR
+LPMMTIME	T_PTR
+LPBYTE		T_PTR
+########################################################################
+INPUT
+T_PTROBJ_SPECIAL
+	if (sv_derived_from($arg, \"${(my $ntt=$ntype)=~s/_/::/g; \$ntt}\")) {
+	  IV tmp = SvIV((SV*)SvRV($arg));
+	  $var = ($type) tmp;
+	} else {
+	  croak(\"$var is not of type ${(my $ntt=$ntype)=~s/_/::/g; \$ntt}\");
+	}
+T_HMIDI
+	if (sv_derived_from($arg, \"Win32::MIDI::API::In\")
+	    || sv_derived_from($arg, \"Win32::MIDI::API::Out\")) {
+	  IV tmp = SvIV((SV*)SvRV($arg));
+	  $var = ($type) tmp;
+	} else {
+	  croak(\"$var is not of type Win32::MIDI::API::In|Out\");
+	}
+T_HMIDIIN
+	if (sv_derived_from($arg, \"Win32::MIDI::API::In\")) {
+	  IV tmp = SvIV((SV*)SvRV($arg));
+	  $var = ($type) tmp;
+	} else {
+	  croak(\"$var is not of type Win32::MIDI::API::In\");
+	}
+T_HMIDIOUT
+	if (sv_derived_from($arg, \"Win32::MIDI::API::Out\")
+	    || sv_derived_from($arg, \"Win32::MIDI::API::Stream\")) {
+	  IV tmp = SvIV((SV*)SvRV($arg));
+	  $var = ($type) tmp;
+	} else {
+	  croak(\"$var is not of type Win32::MIDI::API::Out|Stream\");
+	}
+T_HMIDISTRM
+	if (sv_derived_from($arg, \"Win32::MIDI::API::Stream\")) {
+	  IV tmp = SvIV((SV*)SvRV($arg));
+	  $var = ($type) tmp;
+	} else {
+	  croak(\"$var is not of type Win32::MIDI::API::Stream\");
+	}
+T_MMRESULT
+	$var = ($type)SvIV($arg)
+########################################################################
+OUTPUT
+T_PTROBJ_SPECIAL
+	if ($var) {
+	  sv_setref_pv($arg, \"${(my $ntt=$ntype)=~s/_/::/g; \$ntt}\",(void*)$var);
+	}
+T_HMIDIIN
+	if ($var) {
+	  sv_setref_pv($arg, \"Win32::MIDI::API::In\",(void*)$var);
+	}
+T_HMIDIOUT
+	if ($var) {
+	  sv_setref_pv($arg, \"Win32::MIDI::API::Out\",(void*)$var);
+	}
+T_HMIDISTRM
+	if ($var) {
+	  sv_setref_pv($arg, \"Win32::MIDI::API::Stream\",(void*)$var);
+	}
+T_MMRESULT
+	mmsyserr = $var;
+	$var = ($var == MMSYSERR_NOERROR) ? 1 : 0;
+	sv_setiv($arg, (IV)$var);
